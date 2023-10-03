@@ -10,7 +10,6 @@ export default function App({ Component, pageProps }) {
       enableSystem
       disableTransitionOnChange
     >
-      <Navbar />
       <Component {...pageProps} />
     </ThemeProvider>
   );

@@ -10,32 +10,27 @@ import {
 } from "./ui/card";
 import { useState } from "react";
 
-const ProductCard = () => {
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
-
-  const handleCartToggle = () => {
-    setIsAddedToCart((prev) => !prev);
-  };
+const ProductCard = (props) => {
   return (
     <Card className="m-4">
       <CardHeader>
-        <img src="https://placehold.co/600x400/png" alt="Product Image" />
-        <CardTitle>Black Overfit Tee</CardTitle>
-        <CardDescription>Product Description</CardDescription>
+        <img src={props.productImage} alt="Product Image" />
+        <CardTitle>{props.productTitle}</CardTitle>
+        <CardDescription>{props.productDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>$49.99</p>
+        <p>$ {props.productPrice}</p>
       </CardContent>
       <CardFooter>
-        {isAddedToCart ? (
+        {props.isAdded ? (
           <Button
             className="w-full text-black bg-green-400 hover:bg-green-500"
-            onClick={handleCartToggle}
+            onClick={props.onClick}
           >
-            Added
+            Remove
           </Button>
         ) : (
-          <Button className="w-full" onClick={handleCartToggle}>
+          <Button className="w-full" onClick={props.onClick}>
             Add to Cart
           </Button>
         )}

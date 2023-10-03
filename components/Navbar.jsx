@@ -1,13 +1,18 @@
-import { ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { ShoppingBagIcon } from "lucide-react";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const { cartItems } = props;
+  const itemIds = cartItems.map((item) => item.id).join(",");
+  const url = `/cart?items=${itemIds}`;
+
   return (
     <div className="flex w-full h-16 p-4 justify-between fixed top-0 bg-white items-center">
       <h1>LOGO</h1>
-      <Link href="/cart">
+      <Link href={url}>
         <Button variant="outline" size="icon">
+          {cartItems.count}
           <ShoppingBagIcon />
         </Button>
       </Link>

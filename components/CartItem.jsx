@@ -1,17 +1,19 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
-
-const { Card, CardHeader, CardTitle, CardContent } = require("./ui/card");
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
 const CartItem = () => {
   const [counter, setCounter] = useState(0);
+
   const handleCounterIncrement = () => {
     setCounter((counter) => counter + 1);
   };
+
   const handleCounterDecrement = () => {
     setCounter((counter) => counter - 1);
   };
+
   return (
     <Card className="flex m-4 items-center">
       <img
@@ -43,4 +45,5 @@ const CartItem = () => {
     </Card>
   );
 };
+
 export default CartItem;
