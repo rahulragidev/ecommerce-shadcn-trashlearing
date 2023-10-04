@@ -3,32 +3,37 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
-const CartItem = () => {
-  const [counter, setCounter] = useState(0);
+const CartItem = (props) => {
+  const [counter, setCounter] = useState(1);
 
   const handleCounterIncrement = () => {
     setCounter((counter) => counter + 1);
   };
 
   const handleCounterDecrement = () => {
-    setCounter((counter) => counter - 1);
+    if (counter > 1) {
+      setCounter((counter) => counter - 1);
+    } else {
+      props.handleDelete();
+      console.log("Handle Delete");
+    }
   };
 
   return (
     <Card className="flex m-4 items-center">
       <img
         className="w-32 h-32 rounded-lg"
-        src="https://placehold.co/600x400/png"
+        src={props.productImage}
         alt="Product Image"
       />
       <CardContent className="py-2">
-        <CardTitle>Black Overfit Tee</CardTitle>
-        <p>$49.99</p>
+        <CardTitle>{props.productTitle}</CardTitle>
+        <p>${props.productPrice * counter}</p>
         <div className="flex">
           <Button
             variant="outline"
             size="icon"
-            onClick={handleCounterDecrement}
+            onClick={() => handleCounterDecrement()}
           >
             <MinusIcon />
           </Button>
@@ -36,7 +41,7 @@ const CartItem = () => {
           <Button
             variant="outline"
             size="icon"
-            onClick={handleCounterIncrement}
+            onClick={() => handleCounterIncrement()}
           >
             <PlusIcon />
           </Button>

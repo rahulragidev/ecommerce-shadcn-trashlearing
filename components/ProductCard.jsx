@@ -14,7 +14,11 @@ const ProductCard = (props) => {
   return (
     <Card className="m-4">
       <CardHeader>
-        <img src={props.productImage} alt="Product Image" />
+        <img
+          className="w-full h-343 rounded-lg"
+          src={props.productImage}
+          alt="Product Image"
+        />
         <CardTitle>{props.productTitle}</CardTitle>
         <CardDescription>{props.productDescription}</CardDescription>
       </CardHeader>
