@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import supabase from "@/lib/supabaseClient";
-import CartItem from "@/components/CartItem"; // Adjust the import path to your project structure
+import CartItem from "@/components/CartItem";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Cart = () => {
   const router = useRouter();
   const { items } = router.query;
-  const [productData, setProductData] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const fetchData = async (itemIds) => {
     const { data, error } = await supabase
@@ -19,25 +21,68 @@ const Cart = () => {
       console.error("Error fetching data:", error);
       return;
     }
-
-    setProductData(data || []);
+    /***
+     * When you get handleIncrement / decrement we'll update the quantity of that particulr products quantity inside cartItems state
+     * Total value = we have to loop through cart items and for each item we have to multiply price * quantity and add all the prices
+     */
+    if (data) {
+      let tempCartItems = [];
+      data.forEach((item) => tempCartItems.push({ ...item, quantity: 1 }));
+      setCartItems(tempCartItems);
+    }
   };
+
+  const handleIncrement = useCallback((productId) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  }, []);
+
+  const handleDecrement = useCallback((productId) => {
+    debugger;
+    setCartItems((prev) =>
+      prev.map((item) =>
+        // item.id === productId && item.quantity > 1
+        //   ? { ...item, quantity: item.quantity - 1 }
+        //   : item
+        item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+      )
+    );
+  }, []);
+
+  useEffect(() => {
+    const calculateTotalPrice = () => {
+      let total = 0;
+      for (let i = 0; i < cartItems.length; i++) {
+        total += cartItems[i].product_price * cartItems[i].quantity;
+      }
+      setTotalPrice(total);
+    };
+    calculateTotalPrice();
+  }, [cartItems]);
 
   useEffect(() => {
     if (items) {
-      // if items exists, split the strin ginto an array
+      // split items
       const itemIds = items.split(",");
       // fetchData
       fetchData(itemIds);
       return;
     }
-    // if items don't exist, setProductData to empty array
-    setProductData([]);
+    // if items don't exist, setcartItems to empty array
+    setCartItems([]);
   }, [items]);
+
+  // const handleDelete = useCallback((productId) => {
+  //   console.log("Handle delete executed: ");
+  // });
 
   const handleDelete = useCallback(
     (productId) => {
       console.log("ProductId : ", productId);
+      console.log("items : ", items);
       const itemIds = items.split(",");
 
       console.log("itemIds : ", itemIds);
@@ -51,19 +96,26 @@ const Cart = () => {
     [items]
   );
 
+  /**
+   * on load user has to see the total price of all the products in the cart
+   */
+
   return (
     <div className="mt-16 max-w-4xl mx-auto">
       <h3 className="text-2xl font-semibold tracking-tight ml-4">Cart</h3>
-      {productData.map((product) => (
+      {cartItems.map((product) => (
         <CartItem
           key={product.id}
-          productTitle={product.product_title}
-          productDescription={product.product_description}
-          productPrice={product.product_price}
-          productImage={product.product_image}
+          product={product}
           handleDelete={() => handleDelete(product.id)}
+          handleIncrement={handleIncrement}
+          handleDecrement={handleDecrement}
         />
       ))}
+      <h2>Total : ${totalPrice}</h2>
+      <Link href="/checkout" className="flex justify-end mr-4">
+        <Button> Proceed to checkout</Button>
+      </Link>
     </div>
   );
 };
