@@ -99,6 +99,10 @@ const Cart = () => {
   /**
    * on load user has to see the total price of all the products in the cart
    */
+  /***
+   * When user clicks proceed to checkout, handleCheckout() function does takes all the product Ids
+   * and insert data in orders table creating a unique orderid containing all the product Ids in that order and quantity.
+   */
 
   return (
     <div className="mt-16 max-w-4xl mx-auto">
@@ -113,7 +117,7 @@ const Cart = () => {
         />
       ))}
       <h2>Total : ${totalPrice}</h2>
-      <Link href="/checkout" className="flex justify-end mr-4">
+      <Link href={`/checkout?items=${items}`} className="flex justify-end mr-4">
         <Button> Proceed to checkout</Button>
       </Link>
     </div>
