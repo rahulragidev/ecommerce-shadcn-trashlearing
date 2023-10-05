@@ -11,6 +11,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import supabase from "@/lib/supabaseClient";
 import Cart from "./cart";
+import useLocalStorageState from "use-local-storage-state";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -25,7 +26,10 @@ const formSchema = z.object({
 });
 
 const Checkout = (props) => {
-  const { product, cartItems } = props;
+  const [cartItems, setCartItems] = useLocalStorageState("cartItems");
+
+  console.log("Local Storage Cart Items : ", cartItems);
+  //console.log("Local Storage Cart Items : ", localStorage.getItem("cartItems"));
 
   const methods = useForm({
     resolver: zodResolver(formSchema),

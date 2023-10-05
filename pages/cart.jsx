@@ -4,11 +4,14 @@ import supabase from "@/lib/supabaseClient";
 import CartItem from "@/components/CartItem";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import useLocalStorageState from "use-local-storage-state";
 
 const Cart = () => {
   const router = useRouter();
   const { items } = router.query;
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useLocalStorageState("cartItems", {
+    defaultValue: [],
+  });
   const [totalPrice, setTotalPrice] = useState(0);
 
   const fetchData = async (itemIds) => {
