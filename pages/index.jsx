@@ -5,14 +5,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import supabase from "../lib/supabaseClient";
 import { useEffect, useState } from "react";
-import Cart from "./cart";
 import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
-const Home = () => {
-  const [productData, setProductData] = useState([]);
 
+const Home = () => {
+  //initial load product data
+  const [productData, setProductData] = useState([]);
+  //filter products based on search query using filter on product data.
+  const [filteredProductData, setFilteredProductData] = useState([]);
+  //
   const [cartItems, setCartItems] = useState([]);
+  //initially searchQuery is empty then all products will be loaded , once the value changes filtered products should be changed
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (!searchQuery) {
+      console.log("searchQuery : ", !searchQuery);
+      fetchData();
+    }
+
+    console.log("searchQuery : ", !searchQuery);
+    const filteredProducts = productData.filter((product) =>
+      product.product_title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProductData(filteredProducts);
+    console.log("filteredProductData : ", filteredProductData);
+  }, [searchQuery]);
+
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const fetchData = async () => {
     const { data, error } = await supabase.from("products").select("*");
@@ -24,31 +47,29 @@ const Home = () => {
 
     if (data && data.length > 0) {
       setProductData(data);
+      setFilteredProductData(data);
     } else {
       console.log("No data found");
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
   console.log("Product Data: ", productData);
 
   const handleOnClick = (product) => {
     if (cartItems.find((item) => item.id === product.id)) {
       // // 1. create a temp array
       // let tempCartItems = [];
-      // // 2. Populate the array with existing cartItems, except for product that's being passed
+      // // 2. Populate the array with existing cartItems, except for the product that's being passed
       // for (let i = 0; i < cartItems.length; i++) {
       //   if (cartItems[i].id !== product.id) {
       //     tempCartItems.push(cartItems[i]);
       //   }
       // }
-      // // 3. setthe tempArray as the cartItems state
+      // // 3. set the tempArray as the cartItems state
       // setCartItems(tempCartItems);
       // return;
 
-      debugger;
+      //debugger;
 
       let tempItems = [...cartItems];
 
@@ -71,13 +92,18 @@ const Home = () => {
         </h3>
         <div className="m-4">
           <div className="flex w-full items-center space-x-2 mx-auto">
-            <Input type="Search" placeholder="Search for Products" />
+            <Input
+              type="text"
+              placeholder="Search for Products"
+              value={searchQuery}
+              onChange={handleInputChange}
+            />
             <Button type="submit">Search</Button>
           </div>
         </div>
 
         <div className="flex flex-wrap">
-          {productData.map((product) => (
+          {filteredProductData.map((product) => (
             <div key={product.id} className="w-full md:w-1/2 lg:w-1/3">
               <ProductCard
                 isAdded={cartItems.find((item) => item.id === product.id)}

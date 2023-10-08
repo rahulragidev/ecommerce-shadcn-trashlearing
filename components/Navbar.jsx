@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { ShoppingBagIcon } from "lucide-react";
+import { CircleIcon, ShoppingBagIcon } from "lucide-react";
 
 const Navbar = (props) => {
   const { cartItems } = props;
@@ -12,8 +12,14 @@ const Navbar = (props) => {
       <h1>LOGO</h1>
       <Link href={url}>
         <Button variant="outline" size="icon">
-          {cartItems.count}
           <ShoppingBagIcon />
+          {/* <CircleIcon
+            className="bg-red-900 rounded-lg text-black"
+            value={cartItems.length}
+          /> */}
+          <p className="absolute top-0 right-4 text-white rounded-full text-lg font-bold bg-red-600 mt-1">
+            {cartItems.length}
+          </p>
         </Button>
       </Link>
     </div>
